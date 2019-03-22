@@ -117,7 +117,7 @@ def main():
         car.realroad.insert(0, car.realplt)
         car.realroad.insert(0, car.id)
         string = "(" + ",".join([str(x) for x in car.realroad]) + ")"
-        result = string+"\n"
+        result = result+string+"\n"
     with open("answer.txt", 'w') as f:
         f.write(result)
 

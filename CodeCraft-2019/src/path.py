@@ -147,8 +147,9 @@ class Map(object):
         else:  # 从无限车库中出来的
             if 0 not in nextroad.channel[:][0]:
                 car.time = car.time+1
-                # car.map = self.mapValue
-                # car.Dijkstra()
+                # if self.time%3==0:
+                #     car.map = self.mapValue
+                #     car.Dijkstra()
             else:
                 loc = [0, min(nextroad.spd, car.spd) - dis_cross - 1]  # 下一条路中可以停车的位置
                 for channelid in range(nextroad.chlnum):
@@ -170,8 +171,6 @@ class Map(object):
                     car.realplt = self.time
                 else:
                     car.realplt = car.realplt
-                    # car.map = self.mapValue
-                    # car.Dijkstra()
     # 下一时刻
     def next(self):
         self.mapValue = self.Newmap()
