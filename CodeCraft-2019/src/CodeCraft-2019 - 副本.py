@@ -30,19 +30,21 @@ def initmap(cross, roads):
             value[i][j] = float("inf")
     for i in range(roads.__len__()):
         road = roads[i]
-        count_car = 1
-        velocity = 1
-        minv = 10
-        # 获取这条路上的车数量，和他们速度平均值
-        for i in range(road.channel.__len__()):
-            for j in range(road.channel[0].__len__()):
-                if not road.channel[i][j] == 0:
-                    velocity = velocity+road.channel[i][j].spd
-                    if road.channel[i][j].spd < minv:
-                        minv = road.channel[i][j].spd    # 道路中速度最小值
-                    count_car = count_car+1
-        velocity = velocity//count_car
-        v = 100 * road.lth // road.spd//road.chlnum//pow(minv, 2)//pow(velocity,2) + 10*road.lth//road.spd  # 大体上估计的一个公式
+        # count_car = 1
+        # velocity = 1
+        # minv = 10
+        # # 获取这条路上的车数量，和他们速度平均值
+        # for i in range(road.channel.__len__()):
+        #     for j in range(road.channel[0].__len__()):
+        #         if not road.channel[i][j] == 0:
+        #             velocity = velocity+road.channel[i][j].spd
+        #             if road.channel[i][j].spd < minv:
+        #                 minv = road.channel[i][j].spd    # 道路中速度最小值
+        #             count_car = count_car+1
+        # velocity = velocity//count_car
+        # v = 100 * road.lth // road.spd//road.chlnum//pow(minv, 2)//pow(velocity,2) + 10*road.lth//road.spd  # 大体上估计的一个公式
+
+        v = 100 * road.lth // road.spd//road.chlnum   #
         value[road.fr][road.to] = v
     return value
 
@@ -92,6 +94,7 @@ def main():
     map_value = initmap(cross=cross_list, roads=road_list)
     # 初始化车辆  每辆车用迪杰斯特拉规划一下路径
     for car in car_list:
+        car.plt = car.plt + car.speed-1     # 速度越大，发车越早
         car.map = map_value
         car.Dijkstra()
 # process
