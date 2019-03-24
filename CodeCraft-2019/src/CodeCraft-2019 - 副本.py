@@ -97,11 +97,13 @@ def main():
         car.plt = car.plt + car.speed-1     # 速度越大，发车越早
         car.map = map_value
         car.Dijkstra()
+        print('di')
 # process
     time = 0  # 计时器
     mmap = Map(crosses=cross_list, cars=car_list, roads=road_list, time=time)  # 创建地图
     # 当所有的车还未到达终点，一直更新地图
     while isArr(car_list) == False:
+        print("kaishile")
         mmap.next()
         # 隔一辆更新一辆车的路线
         # new_map = initmap(cross_list, road_list)
