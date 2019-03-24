@@ -149,7 +149,7 @@ class Map(object):
         else:  # 从无限车库中出来的
             if 0 not in nextroad.channel[:][0]:
                 car.time = car.time+1
-                car.plt = car.plt+3
+                car.plt = car.plt+25
                 # if self.time%3 == 0:
                 #     car.map = self.Newmap()
                 #     car.Dijkstra()
@@ -204,7 +204,8 @@ class Map(object):
                         road_cross_list[3] = road_
                     else:
                         cross_road_list[road_.id] = 3      # 通过该循环将该路口所连接的道路存入  road_cross_list 和 cross_road_list当中
-            # 实在是才疏学浅，用了这么多if-else
+
+
             v = [True, True, True]
             while True:
                 # 直行
@@ -214,9 +215,13 @@ class Map(object):
                         for j in range(road_.chlnum):
                             if not road_.channel[j][i] == 0:
                                 if road_.channel[j][i].time <= self.time and len(set(road_.channel[j][i+1:]))<= 1:
-                                    if self.time%3 ==0:
+                                    if self.time%4 ==0:
+                                        oldpath = road_.channel[j][i].planpath
                                         road_.channel[j][i].map = self.Newmap()
                                         road_.channel[j][i].Dijkstra(isInit=False)
+                                        if len(road_.channel[j][i].planpath)>=3:
+                                            if road_.channel[j][i].planpath[2] ==road_.fr:
+                                                road_.channel[j][i].planpath = oldpath
                                     if road_.channel[j][i].spd+i+1>road_.lth:
                                         v[0] = True
                                         nextroad_ = road_
@@ -238,9 +243,13 @@ class Map(object):
                         for j in range(road_.chlnum):
                             if not road_.channel[j][i] == 0:
                                 if road_.channel[j][i].time<=self.time and len(set(road_.channel[j][i+1:])) <= 1:
-                                    if self.time% 2 ==0:
+                                    if self.time% 3 ==0:
+                                        oldpath = road_.channel[j][i].planpath
                                         road_.channel[j][i].map = self.Newmap()
                                         road_.channel[j][i].Dijkstra(isInit=False)
+                                        if len(road_.channel[j][i].planpath) >= 3:
+                                            if road_.channel[j][i].planpath[2] == road_.fr:
+                                                road_.channel[j][i].planpath = oldpath
                                     if road_.channel[j][i].spd + i + 1 > road_.lth:
                                         v[1] = True
                                         nextroad_ = road_
@@ -261,9 +270,13 @@ class Map(object):
                         for j in range(road_.chlnum):
                             if not road_.channel[j][i] == 0:
                                 if road_.channel[j][i].time <= self.time and len(set(road_.channel[j][i+1:])) <= 1:
-                                    if self.time %3 ==0:
+                                    if self.time %5 ==0:
+                                        oldpath = road_.channel[j][i].planpath
                                         road_.channel[j][i].map = self.Newmap()
                                         road_.channel[j][i].Dijkstra(isInit=False)
+                                        if len(road_.channel[j][i].planpath) >= 3:
+                                            if road_.channel[j][i].planpath[2] == road_.fr:
+                                                road_.channel[j][i].planpath = oldpath
                                     if road_.channel[j][i].spd + i + 1 > road_.lth:
                                         v[2] = True
                                         nextroad_ = road_
