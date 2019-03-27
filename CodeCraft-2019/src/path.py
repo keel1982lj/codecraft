@@ -175,8 +175,8 @@ class Map(object):
                         car.spd = min(newspeed, nextroad_car.spd)
                     car.spd = newspeed
                     car.realplt = self.time
-                else:
-                    car.realplt = car.realplt
+                # else:
+                #     car.realplt = car.realplt
     # 下一时刻
     def next(self):
         # self.mapValue = self.Newmap()
@@ -208,12 +208,12 @@ class Map(object):
                     else:
                         cross_road_list[road_.id] = 3      # 通过该循环将该路口所连接的道路存入  road_cross_list 和 cross_road_list当中
                 for i in range(road_.chlnum):
-                    if road_.channel[i].count(0) <= 1:
+                    if road_.channel[i].count(0) < 1:
                         for j in range(road_.lth):
                             if j %2 ==0:
                                 road_car = road_.channel[i][j]
                                 if not road_car == 0:
-                                    road_car.plt = self.time+random.choices([1, 2, 5, 9, 14])[0]  # 参数是拍脑袋想的
+                                    road_car.plt = self.time + 1  # random.choices([1, 5, 10, 14])[0]  # 参数是拍脑袋想的
                                     road_car.realpath = []
                                     # road_car.map = self.Newmap()
                                     # road_car.Dijkstra()
