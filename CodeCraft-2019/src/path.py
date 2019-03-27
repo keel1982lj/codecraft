@@ -106,7 +106,7 @@ class Map(object):
                                 break
                             # loc = [channelid, min(nextroad.spd, car.spd) - dis_cross - 1]
                         if loc[1] >=0:
-                            print(loc)
+                            # print(loc)
                             nextroad.channel[loc[0]][loc[1]] = nowchannel[index]
                             nowchannel[index] = 0
                             car.time = car.time + 1     # 车上的表更改时间
@@ -208,12 +208,12 @@ class Map(object):
                     else:
                         cross_road_list[road_.id] = 3      # 通过该循环将该路口所连接的道路存入  road_cross_list 和 cross_road_list当中
                 for i in range(road_.chlnum):
-                    if road_.channel[i].count(0) < 1:
+                    if road_.channel[i].count(0) <= 1:
                         for j in range(road_.lth):
                             if j %2 ==0:
                                 road_car = road_.channel[i][j]
                                 if not road_car == 0:
-                                    road_car.plt = self.time+random.choices([1, 5, 10, 14])[0]
+                                    road_car.plt = self.time+random.choices([1, 2, 5, 9, 14])[0]  # 参数是拍脑袋想的
                                     road_car.realpath = []
                                     # road_car.map = self.Newmap()
                                     # road_car.Dijkstra()
@@ -244,14 +244,16 @@ class Map(object):
                                             nextroad_ = self.mapRoad[road_car.planpath[1]][
                                                 road_car.planpath[2]]
                                         if nextroad_ == road_:
-                                                self.car_run(nowroad=road_, cross_mapid= cross, nextroad = nextroad_, nowchannel=road_.channel[j], car =road_.channel[j][i])
+                                                self.car_run(nowroad=road_, cross_mapid= cross, nextroad = nextroad_, nowchannel=road_.channel[j], car =road_car)
                                         elif cross_road_list[nextroad_.id] == (key + 2) % 4:
                                             self.car_run(nowroad=road_, cross_mapid=cross, nextroad=nextroad_,
                                                          nowchannel=road_.channel[j], car=road_car)
                                     else:
                                         v[0] = False
+                                        break
                                 else:
                                     v[0] = False
+                                    break
                             if i == 0 and j == road_.chlnum-1:
                                 v[0] = False
                 # 左拐
@@ -282,8 +284,10 @@ class Map(object):
                                                          nowchannel=road_.channel[j], car=road_car)
                                     else:
                                         v[1] = False
+                                        break
                                 else:
                                     v[1] = False
+                                    break
                             if i ==0 and j ==road_.chlnum-1:
                                 v[1] = False
                 # 右拐
@@ -314,8 +318,10 @@ class Map(object):
                                                          nowchannel=road_.channel[j], car=road_car)
                                 else:
                                     v[2] = False
+                                    break
                             else:
                                 v[2] = False
+                                break
                             if i == 0 and j ==road_.chlnum-1:
                                 v[2] = False
                 if not(v[0] or v[1] or v[2]):

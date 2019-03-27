@@ -1,5 +1,6 @@
 import logging
 import sys
+import time
 import numpy as np
 import pandas as pd
 from Car import Car
@@ -24,7 +25,7 @@ def isArr(car_list):
 
 # Dijkstra 创建一个map_path
 def map_Dijkstra(map_value, crosses):
-    map_path = [[[j] for i in range(crosses.__len__())] for j in range(crosses.__len__())]
+    map_path = [[[] for i in range(crosses.__len__())] for j in range(crosses.__len__())]
     for fr in range(crosses.__len__()):
         dis = {}  # 当前节点距离每个节点的距离
         visited = []
@@ -51,6 +52,7 @@ def map_Dijkstra(map_value, crosses):
                         dis[j][1].append(_min_dis_point)
         for j in range(crosses.__len__()):
             if not j == fr:
+                dis[j][1].insert(0, fr)
                 dis[j][1].extend([j])
                 map_path[fr][j] = dis[j][1]
     return map_path
@@ -131,13 +133,12 @@ def main():
     # 初始化车辆  每辆车用迪杰斯特拉规划一下路径
     for car in car_list:
         car.plt = car.plt + car.speed-1     # 速度越大，发车越早
-        car.planpath = map_path[car.fr][car.to]
+        car.planpath = map_path[car.fr][car.to][:]
 # process
     time = 0  # 计时器
     mmap = Map(crosses=cross_list, cars=car_list, roads=road_list, time=time)  # 创建地图
     # 当所有的车还未到达终点，一直更新地图
     while isArr(car_list) == False:
-        print("kaishile")
         mmap.next()
         # 隔一辆更新一辆车的路线
         # new_map = initmap(cross_list, road_list)
@@ -163,4 +164,7 @@ def main():
 
 
 if __name__ == "__main__":
+    time_start = time.time()
     main()
+    time_end=time.time()
+    print("time_cost", time_end-time_start, 's')
