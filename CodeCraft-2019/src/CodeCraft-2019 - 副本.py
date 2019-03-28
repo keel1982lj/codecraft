@@ -24,6 +24,7 @@ def isArr(car_list):
     return True
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Dijkstra 创建一个map_path
 def map_Dijkstra(map_value, crosses):
     map_path = [[[] for i in range(crosses.__len__())] for j in range(crosses.__len__())]
@@ -58,6 +59,8 @@ def map_Dijkstra(map_value, crosses):
                 map_path[fr][j] = dis[j][1]
     return map_path
 
+=======
+>>>>>>> parent of 2961867... 还是不甘心，再改改
 =======
 >>>>>>> parent of 2961867... 还是不甘心，再改改
 # 初始化地图
@@ -140,6 +143,9 @@ def main():
         car.map = map_value
         car.Dijkstra()
         print('di')
+<<<<<<< HEAD
+>>>>>>> parent of 2961867... 还是不甘心，再改改
+=======
 >>>>>>> parent of 2961867... 还是不甘心，再改改
 # process
     time = 0  # 计时器
