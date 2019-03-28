@@ -214,7 +214,11 @@ class Map(object):
                                 road_car = road_.channel[i][j]
                                 if not road_car == 0:
 <<<<<<< HEAD
+<<<<<<< HEAD
                                     road_car.plt = self.time + 1  # random.choices([1, 5, 10, 14])[0]  # 参数是拍脑袋想的
+=======
+                                    road_car.plt = self.time+random.choices([1, 5, 10, 14])[0]
+>>>>>>> parent of 6ce2d2b... 回宿舍调参
 =======
                                     road_car.plt = self.time+random.choices([1, 5, 10, 14])[0]
 >>>>>>> parent of 6ce2d2b... 回宿舍调参

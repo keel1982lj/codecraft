@@ -138,6 +138,7 @@ def main():
     for car in car_list:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         car.plt = car.plt + (car.speed-1)*2    # 速度越大，发车越早
         car.planpath = map_path[car.fr][car.to][:]
 =======
@@ -152,6 +153,10 @@ def main():
 >>>>>>> parent of 2961867... 还是不甘心，再改改
 =======
 >>>>>>> parent of 2961867... 还是不甘心，再改改
+=======
+        car.plt = car.plt + car.speed-1     # 速度越大，发车越早
+        car.planpath = map_path[car.fr][car.to]
+>>>>>>> parent of 6ce2d2b... 回宿舍调参
 =======
         car.plt = car.plt + car.speed-1     # 速度越大，发车越早
         car.planpath = map_path[car.fr][car.to]
