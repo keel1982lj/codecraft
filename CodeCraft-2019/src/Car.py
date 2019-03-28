@@ -12,7 +12,6 @@ class Car(object):
         self.time = 0
         self.realroad=[]
         self.realplt=plt
-        self.realfr = fr
 
     # dijkstra 算法规划路径
     # def Dijkstra(self, isInit=True):
