@@ -84,7 +84,7 @@ class Map(object):
         self.mapRoad = roadmat
 
     # 车跑
-    def car_run(self, cross_mapid, nowroad=None, nextroad=None, nowchannel=None, car=None):
+    def car_run(self, cross_mapid, nowroad=None, nextroad=None, nowchannel=None, car=None, dao=False):
 
         dis_cross = 0
         if not nowchannel == None:    # 不是从无限车库中跳出来的
@@ -156,7 +156,7 @@ class Map(object):
                         else:
                             car.time = car.time+1
             # 其他情况
-            else:
+            elif dao:
                 # 考虑如果当前路被堵死了
                 loc_ = nowchannel.__len__() - 1
                 for i in range(index+1, loc_ + 1)[::-1]:
@@ -246,7 +246,7 @@ class Map(object):
                     else:
                         cross_road_list[road_.id] = 3      # 通过该循环将该路口所连接的道路存入  road_cross_list 和 cross_road_list当中
                 for i in range(road_.chlnum):
-                    if road_.channel[i].count(0) < 1 and self.time % 2 == 0:
+                    if road_.channel[i].count(0) < 1 :
                         for j in range(road_.lth):
                             if j % 3 == 0:
                                 road_car = road_.channel[i][j]
@@ -284,7 +284,7 @@ class Map(object):
                                             nextroad_ = self.mapRoad[planpath_car[0]][
                                                 planpath_car[1]]
                                         if nextroad_ == road_:
-                                                self.car_run(nowroad=road_, cross_mapid= cross, nextroad = nextroad_, nowchannel=road_.channel[j], car =road_car)
+                                                self.car_run(nowroad=road_, cross_mapid= cross, nextroad = nextroad_, nowchannel=road_.channel[j], car =road_car, dao=True)
                                         elif cross_road_list[nextroad_.id] == (key + 2) % 4:
                                             self.car_run(nowroad=road_, cross_mapid=cross, nextroad=nextroad_,
                                                          nowchannel=road_.channel[j], car=road_car)
@@ -319,7 +319,7 @@ class Map(object):
                                             nextroad_ = self.mapRoad[planpath_car[0]][
                                                 planpath_car[1]]
                                         if nextroad_==road_:
-                                                self.car_run(nowroad=road_, cross_mapid= cross, nextroad = nextroad_, nowchannel=road_.channel[j], car =road_.channel[j][i])
+                                                self.car_run(nowroad=road_, cross_mapid= cross, nextroad = nextroad_, nowchannel=road_.channel[j], car =road_.channel[j][i], dao=True)
                                         elif cross_road_list[nextroad_.id] == (key + 1) % 4:
                                             self.car_run(nowroad=road_, cross_mapid=cross, nextroad=nextroad_,
                                                          nowchannel=road_.channel[j], car=road_car)
@@ -354,7 +354,7 @@ class Map(object):
                                             nextroad_ = self.mapRoad[planpath_car[0]][
                                                 planpath_car[1]]
                                         if nextroad_==road_:
-                                                self.car_run(nowroad=road_, cross_mapid= cross, nextroad = nextroad_, nowchannel=road_.channel[j], car =road_.channel[j][i])
+                                                self.car_run(nowroad=road_, cross_mapid= cross, nextroad = nextroad_, nowchannel=road_.channel[j], car =road_.channel[j][i], dao=True)
                                         elif cross_road_list[nextroad_.id] == (key + 3) % 4:
                                             self.car_run(nowroad=road_, cross_mapid=cross, nextroad=nextroad_,
                                                          nowchannel=road_.channel[j], car=road_car)
