@@ -132,11 +132,11 @@ def main():
     map_path = map_Dijkstra(map_value, cross_list)
     # 初始化车辆  每辆车用迪杰斯特拉规划一下路径
     for car in car_list:
-        car.plt = car.plt + car.speed-1     # 速度越大，发车越早
-        car.planpath = map_path[car.fr][car.to][:]
+        car.plt = car.plt + (7-car.speed)*2     # 速度越大，发车越早
+        # car.planpath = map_path[car.fr][car.to][:]
 # process
     time = 0  # 计时器
-    mmap = Map(crosses=cross_list, cars=car_list, roads=road_list, time=time)  # 创建地图
+    mmap = Map(crosses=cross_list, cars=car_list, roads=road_list, time=time, map_path=map_path)  # 创建地图
     # 当所有的车还未到达终点，一直更新地图
     while isArr(car_list) == False:
         mmap.next()
