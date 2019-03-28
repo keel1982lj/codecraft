@@ -1,5 +1,5 @@
 class Car(object):
-    def __init__(self, id, fr, to, speed,  plt, isloc=False):
+    def __init__(self, id, fr, to, speed,  plt, map=None, isloc=False):
         self.id = id
         self.fr = fr
         self.to = to
@@ -7,6 +7,7 @@ class Car(object):
         self.spd = speed    # spd实际速度
         self.plt = plt
         self.isloc = isloc
+        self.map = map
         self.planpath = []
         self.realpath = []
         self.time = 0

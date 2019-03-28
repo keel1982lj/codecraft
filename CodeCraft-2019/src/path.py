@@ -13,35 +13,35 @@ class Map(object):
         self.time = time
         self.cars = cars
         self.initRoad()
-        # self.mapValue = self.Newmap()  # 各个节点之间的费用矩阵
+        self.mapValue = self.Newmap()  # 各个节点之间的费用矩阵
 
     # 初始化地图
-    # def Newmap(self):
-    #     value = np.zeros([self.crosses.__len__(), self.crosses.__len__()])
-    #     for i in range(self.crosses.__len__()):
-    #         for j in range(self.crosses.__len__()):
-    #             value[i][j] = float("inf")
-    #     for i in range(self.roads.__len__()):
-    #         road = self.roads[i]
-    #         count_car = 1
-    #         velocity = 1
-    #         minv = 10
-    #         count = 0.1
-    #         # 获取这条路上的车数量，和他们速度平均值
-    #         for i in range(road.channel.__len__()):
-    #             for j in range(road.channel[0].__len__()):
-    #                 if not road.channel[i][j] == 0:
-    #                     count = count +1
-    #                     velocity = velocity + road.channel[i][j].spd
-    #                     if road.channel[i][j].spd < minv:
-    #                         minv = road.channel[i][j].spd  # 道路中速度最小值
-    #                     count_car = count_car + 1
-    #         velocity = velocity // count_car
-    #         # v = 100 * road.lth // road.spd // pow(road.chlnum, 0.2) // pow(minv, 2) // pow(velocity,
-    #         #                                                                      2) + 10 * road.lth // road.spd - math.log(max(0.0001, 0.5-count_car/(count/road.chlnum)))# 大体上估计的一个公式
-    #         v = - math.log(max(0.0001, 0.5-count_car/(count/road.chlnum)))+pow(2.712, 12/minv)
-    #         value[road.fr][road.to] = v
-    #     return value
+    def Newmap(self):
+        value = np.zeros([self.crosses.__len__(), self.crosses.__len__()])
+        for i in range(self.crosses.__len__()):
+            for j in range(self.crosses.__len__()):
+                value[i][j] = float("inf")
+        for i in range(self.roads.__len__()):
+            road = self.roads[i]
+            count_car = 1
+            velocity = 1
+            minv = 10
+            count = 0.1
+            # 获取这条路上的车数量，和他们速度平均值
+            for i in range(road.channel.__len__()):
+                for j in range(road.channel[0].__len__()):
+                    if not road.channel[i][j] == 0:
+                        count = count +1
+                        velocity = velocity + road.channel[i][j].spd
+                        if road.channel[i][j].spd < minv:
+                            minv = road.channel[i][j].spd  # 道路中速度最小值
+                        count_car = count_car + 1
+            velocity = velocity // count_car
+            # v = 100 * road.lth // road.spd // pow(road.chlnum, 0.2) // pow(minv, 2) // pow(velocity,
+            #                                                                      2) + 10 * road.lth // road.spd - math.log(max(0.0001, 0.5-count_car/(count/road.chlnum)))# 大体上估计的一个公式
+            v = - math.log(max(0.0001, 0.5-count_car/(count/road.chlnum)))+pow(2.712, 12/minv)
+            value[road.fr][road.to] = v
+        return value
 
     # 初始化地图中的路径矩阵
     def initRoad(self):
@@ -215,8 +215,8 @@ class Map(object):
                                 if not road_car == 0:
                                     road_car.plt = self.time + 1  # random.choices([1, 5, 10, 14])[0]  # 参数是拍脑袋想的
                                     road_car.realpath = []
-                                    # road_car.map = self.Newmap()
-                                    # road_car.Dijkstra()
+                                    road_car.map = self.Newmap()
+                                    road_car.Dijkstra()
                                     road_.channel[i][j] = 0
 
             v = [True, True, True]
@@ -229,13 +229,13 @@ class Map(object):
                             road_car = road_.channel[j][i]
                             if not road_car == 0:
                                 if road_car.time <= self.time and len(set(road_.channel[j][i+1:]))<= 1:
-                                    # if self.time%7 ==0:
-                                    #     oldpath = road_car.planpath
-                                    #     road_car.map = self.Newmap()
-                                    #     road_car.Dijkstra(isInit=False)
-                                    #     if len(road_car.planpath)>=3:
-                                    #         if road_car.planpath[2] ==road_.fr:
-                                    #             road_car.planpath = oldpath
+                                    if self.time%7 ==0:
+                                        oldpath = road_car.planpath
+                                        road_car.map = self.Newmap()
+                                        road_car.Dijkstra(isInit=False)
+                                        if len(road_car.planpath)>=3:
+                                            if road_car.planpath[2] ==road_.fr:
+                                                road_car.planpath = oldpath
                                     if road_car.spd+i+1>road_.lth:
                                         v[0] = True
                                         nextroad_ = road_
@@ -264,13 +264,13 @@ class Map(object):
                             road_car = road_.channel[j][i]
                             if not road_car == 0:
                                 if road_car.time<=self.time and len(set(road_.channel[j][i+1:])) <= 1:
-                                    # if self.time% 6 ==0:
-                                    #     oldpath = road_car.planpath
-                                    #     road_car.map = self.Newmap()
-                                    #     road_car.Dijkstra(isInit=False)
-                                    #     if len(road_car.planpath) >= 3:
-                                    #         if road_car.planpath[2] == road_.fr:
-                                    #             road_car.planpath = oldpath
+                                    if self.time% 6 ==0:
+                                        oldpath = road_car.planpath
+                                        road_car.map = self.Newmap()
+                                        road_car.Dijkstra(isInit=False)
+                                        if len(road_car.planpath) >= 3:
+                                            if road_car.planpath[2] == road_.fr:
+                                                road_car.planpath = oldpath
                                     if road_car.spd + i + 1 > road_.lth:
                                         v[1] = True
                                         nextroad_ = road_
@@ -298,13 +298,13 @@ class Map(object):
                             road_car = road_.channel[j][i]
                             if not road_car == 0:
                                 if road_car.time <= self.time and len(set(road_.channel[j][i+1:])) <= 1:
-                                    # if self.time %5 ==0:
-                                    #     oldpath = road_car.planpath
-                                    #     road_car.map = self.Newmap()
-                                    #     road_car.Dijkstra(isInit=False)
-                                    #     if len(road_car.planpath) >= 3:
-                                    #         if road_car.planpath[2] == road_.fr:
-                                    #             road_car.planpath = oldpath
+                                    if self.time %5 ==0:
+                                        oldpath = road_car.planpath
+                                        road_car.map = self.Newmap()
+                                        road_car.Dijkstra(isInit=False)
+                                        if len(road_car.planpath) >= 3:
+                                            if road_car.planpath[2] == road_.fr:
+                                                road_car.planpath = oldpath
                                     if road_car.spd + i + 1 > road_.lth:
                                         v[2] = True
                                         nextroad_ = road_
@@ -340,9 +340,9 @@ class Map(object):
 
             for car in self.cars:      # 上路
                 if car.plt <= self.time and car.fr == cross:
-                    # if self.time % 5 == 0:
-                    #     car.map = self.Newmap()
-                    #     car.Dijkstra()
+                    if self.time % 5 == 0:
+                        car.map = self.Newmap()
+                        car.Dijkstra()
 
                     nextroad_ = self.mapRoad[car.planpath[0]][car.planpath[1]]
                     self.car_run(cross_mapid=cross, nextroad=nextroad_, car=car)

@@ -23,6 +23,7 @@ def isArr(car_list):
             return False
     return True
 
+<<<<<<< HEAD
 # Dijkstra 创建一个map_path
 def map_Dijkstra(map_value, crosses):
     map_path = [[[] for i in range(crosses.__len__())] for j in range(crosses.__len__())]
@@ -57,6 +58,8 @@ def map_Dijkstra(map_value, crosses):
                 map_path[fr][j] = dis[j][1]
     return map_path
 
+=======
+>>>>>>> parent of 2961867... 还是不甘心，再改改
 # 初始化地图
 def initmap(cross, roads):
     value = np.zeros([cross.__len__(), cross.__len__()])
@@ -127,13 +130,17 @@ def main():
                      to=int(road[4]) - 1))
     # 初始化地图权值
     map_value = initmap(cross=cross_list, roads=road_list)
-
-    # Dijkstra初始化
-    map_path = map_Dijkstra(map_value, cross_list)
     # 初始化车辆  每辆车用迪杰斯特拉规划一下路径
     for car in car_list:
+<<<<<<< HEAD
         car.plt = car.plt + (car.speed-1)*2    # 速度越大，发车越早
         car.planpath = map_path[car.fr][car.to][:]
+=======
+        car.plt = car.plt + car.speed-1     # 速度越大，发车越早
+        car.map = map_value
+        car.Dijkstra()
+        print('di')
+>>>>>>> parent of 2961867... 还是不甘心，再改改
 # process
     time = 0  # 计时器
     mmap = Map(crosses=cross_list, cars=car_list, roads=road_list, time=time)  # 创建地图
