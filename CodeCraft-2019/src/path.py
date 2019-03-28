@@ -15,40 +15,45 @@ class Map(object):
         self.initRoad()
         self.map_path = map_path
         self.mapValue = None # self.Newmap()  # 各个节点之间的费用矩阵
+        self.isNew=[False for i in range(roads.__len__())]
 
     def map_Dijkstra(self, fr):
-        self.Newmap()
-        dis = {}  # 当前节点距离每个节点的距离
-        visited = []
-        _min_dis = None
-        _min_dis_point = None
+        if not self.isNew[fr]:
+            if fr%2==0:
+                self.Newmap(model=True)
+            else:
+                self.Newmap(model=False)
+            dis = {}  # 当前节点距离每个节点的距离
+            visited = []
+            _min_dis = None
+            _min_dis_point = None
 
-        # 先初始化
-        for i in range(len(self.mapValue)):  # map指的是各个路口到各个路口的权值矩阵
-            dis[i] = [self.mapValue[fr][i], []]
-        for i in range(len(dis)):
-            sort_dis = sorted(dis.items(), key=lambda item: item[1][0])  # 找到dis中距离起始点距离最小的点
-            for p, d in sort_dis:
-                if p not in visited:
-                    _min_dis_point = p
-                    _min_dis = d[0]
-                    visited.append(p)
-                    break
-            for j in range(len(self.mapValue)):
-                if self.mapValue[_min_dis_point][j] < float("inf"):
-                    update = _min_dis + self.mapValue[_min_dis_point][j]
-                    if dis[j][0] > update:
-                        dis[j][0] = update
-                        dis[j][1] = dis[_min_dis_point][1][:]
-                        dis[j][1].append(_min_dis_point)
-        for j in range(self.crosses.__len__()):
-            if not j == fr:
-                dis[j][1].insert(0, fr)
-                dis[j][1].extend([j])
-                self.map_path[fr][j] = dis[j][1]
+            # 先初始化
+            for i in range(len(self.mapValue)):  # map指的是各个路口到各个路口的权值矩阵
+                dis[i] = [self.mapValue[fr][i], []]
+            for i in range(len(dis)):
+                sort_dis = sorted(dis.items(), key=lambda item: item[1][0])  # 找到dis中距离起始点距离最小的点
+                for p, d in sort_dis:
+                    if p not in visited:
+                        _min_dis_point = p
+                        _min_dis = d[0]
+                        visited.append(p)
+                        break
+                for j in range(len(self.mapValue)):
+                    if self.mapValue[_min_dis_point][j] < float("inf"):
+                        update = _min_dis + self.mapValue[_min_dis_point][j]
+                        if dis[j][0] > update:
+                            dis[j][0] = update
+                            dis[j][1] = dis[_min_dis_point][1][:]
+                            dis[j][1].append(_min_dis_point)
+            for j in range(self.crosses.__len__()):
+                if not j == fr:
+                    dis[j][1].insert(0, fr)
+                    dis[j][1].extend([j])
+                    self.map_path[fr][j] = dis[j][1]
 
     # 初始化地图
-    def Newmap(self):
+    def Newmap(self, model=True):
         value = np.zeros([self.crosses.__len__(), self.crosses.__len__()])
         for i in range(self.crosses.__len__()):
             for j in range(self.crosses.__len__()):
@@ -71,7 +76,10 @@ class Map(object):
             velocity = velocity // count_car
             # v = 100 * road.lth // road.spd // pow(road.chlnum, 0.2) // pow(minv, 2) // pow(velocity,
             #                                                                      2) + 10 * road.lth // road.spd - math.log(max(0.0001, 0.5-count_car/(count/road.chlnum)))# 大体上估计的一个公式
-            v = - math.log(max(0.0001, 0.5-count_car/(count/road.chlnum)))+pow(2.712, 12/minv)
+            if model:
+                v = 100 * road.lth // road.spd//road.chlnum//pow(minv, 2)//pow(velocity, 2) + 10*road.lth//road.spd
+            else:
+                v = 100 * road.lth // road.spd//road.chlnum//pow(minv, 2)//pow(velocity, 2) + 10*road.lth//road.spd
             value[road.fr][road.to] = v
         self.mapValue = value
 
@@ -105,7 +113,7 @@ class Map(object):
                         car.spd = min(newspeed, nowchannel[loc+1].spd)
                 car.spd = newspeed
             # 有可能会到下一条路时
-            elif car.spd > dis_cross and min(nextroad.spd, car.spd)-dis_cross > 0:
+            elif car.spd > dis_cross and min(nextroad.spd, car.spd)-dis_cross > 0 and not dao:
                 # car.map = self.Newmap()
                 # car.Dijkstra(isInit=False)
                 # 考虑如果当前路被堵死了
@@ -156,7 +164,7 @@ class Map(object):
                         else:
                             car.time = car.time+1
             # 其他情况
-            elif dao:
+            else:
                 # 考虑如果当前路被堵死了
                 loc_ = nowchannel.__len__() - 1
                 for i in range(index+1, loc_ + 1)[::-1]:
@@ -187,11 +195,11 @@ class Map(object):
         else:  # 从无限车库中出来的
             if 0 not in nextroad.channel[:][0]:
                 car.time = car.time+1
-                car.plt = car.plt+ [5, 10, 15, 20, 15][car.id % 5]
-                print("出不来了")
+                car.plt = car.plt+ (15-car.spd)*2
+                # print("出不来了")
                 # if car.id % 7 == 0:
                 #     print("出不来，Di了")
-                #     self.map_Dijkstra(cross_mapid)
+                self.map_Dijkstra(cross_mapid)
             else:
                 loc = [0, min(nextroad.spd, car.spd) - dis_cross - 1]  # 下一条路中可以停车的位置
                 for channelid in range(nextroad.chlnum):
@@ -248,16 +256,17 @@ class Map(object):
                 for i in range(road_.chlnum):
                     if road_.channel[i].count(0) < 1 :
                         for j in range(road_.lth):
-                            if j % 3 == 0:
+                            if not road_.channel[i][j].to == cross:
                                 road_car = road_.channel[i][j]
                                 if not road_car == 0:
-                                    road_car.plt = self.time + [7, 3, 5, 9, 14][self.time%5] # random.choices([1, 2, 5, 9, 14])[0]  # 参数是拍脑袋想的
+                                    road_car.plt = self.time + [1, 3, 5, 9, 14][self.time%5] # random.choices([1, 2, 5, 9, 14])[0]  # 参数是拍脑袋想的
                                     road_car.realroad=[]
                                     road_car.fr=road_car.realfr
+
+                                    self.map_Dijkstra(road_car.fr)
+
                                     road_.channel[i][j] = 0
-                        # if self.time % 7==0:
-                        #     print("满了")
-                        #     self.map_Dijkstra(cross)
+
 
             v = [True, True, True]
             while True:
@@ -278,22 +287,23 @@ class Map(object):
                                     #             road_car.planpath = oldpath
                                     if road_car.spd+i+1>road_.lth:
                                         v[0] = True
+
                                         nextroad_ = road_
                                         planpath_car = self.map_path[road_car.fr][road_car.to]
                                         if planpath_car.__len__() >= 2:
                                             nextroad_ = self.mapRoad[planpath_car[0]][
                                                 planpath_car[1]]
+                                        # print("直行")
                                         if nextroad_ == road_:
+
                                                 self.car_run(nowroad=road_, cross_mapid= cross, nextroad = nextroad_, nowchannel=road_.channel[j], car =road_car, dao=True)
                                         elif cross_road_list[nextroad_.id] == (key + 2) % 4:
                                             self.car_run(nowroad=road_, cross_mapid=cross, nextroad=nextroad_,
                                                          nowchannel=road_.channel[j], car=road_car)
                                     else:
                                         v[0] = False
-                                        break
                                 else:
                                     v[0] = False
-                                    break
                             if i == 0 and j == road_.chlnum-1:
                                 v[0] = False
                 # 左拐
@@ -318,6 +328,7 @@ class Map(object):
                                         if planpath_car.__len__() >= 2:
                                             nextroad_ = self.mapRoad[planpath_car[0]][
                                                 planpath_car[1]]
+                                        # print("左")
                                         if nextroad_==road_:
                                                 self.car_run(nowroad=road_, cross_mapid= cross, nextroad = nextroad_, nowchannel=road_.channel[j], car =road_.channel[j][i], dao=True)
                                         elif cross_road_list[nextroad_.id] == (key + 1) % 4:
@@ -325,10 +336,8 @@ class Map(object):
                                                          nowchannel=road_.channel[j], car=road_car)
                                     else:
                                         v[1] = False
-                                        break
                                 else:
                                     v[1] = False
-                                    break
                             if i ==0 and j ==road_.chlnum-1:
                                 v[1] = False
                 # 右拐
@@ -353,6 +362,7 @@ class Map(object):
                                         if planpath_car.__len__() >= 2:
                                             nextroad_ = self.mapRoad[planpath_car[0]][
                                                 planpath_car[1]]
+                                        # print("右拐")
                                         if nextroad_==road_:
                                                 self.car_run(nowroad=road_, cross_mapid= cross, nextroad = nextroad_, nowchannel=road_.channel[j], car =road_.channel[j][i], dao=True)
                                         elif cross_road_list[nextroad_.id] == (key + 3) % 4:
@@ -360,10 +370,8 @@ class Map(object):
                                                          nowchannel=road_.channel[j], car=road_car)
                                 else:
                                     v[2] = False
-                                    break
                             else:
                                 v[2] = False
-                                break
                             if i == 0 and j ==road_.chlnum-1:
                                 v[2] = False
                 if not(v[0] or v[1] or v[2]):
@@ -386,12 +394,15 @@ class Map(object):
                     #     car.map = self.Newmap()
                     #     car.Dijkstra()
 
-                    # planpath_car = self.map_path[car.fr][car.to]
+                    planpath_car = self.map_path[car.fr][car.to]
 
-                    # nextroad_ = self.mapRoad[planpath_car[0]][planpath_car[1]]
+                    nextroad_ = self.mapRoad[planpath_car[0]][planpath_car[1]]
 
-                    nextroad_list = [i for i in self.mapRoad[car.fr] if not i == 0]
-                    # if 0 not in nextroad_.channel[:][0]:
+                    # nextroad_list = [i for i in self.mapRoad[car.fr] if not i == 0]
+
+
+                    #if 0 not in nextroad_.channel[:][0]:
+
                     #     car.time = car.time + 1
                     #     car.plt = car.plt + (15-car.spd)*2
                     #     if car.id % 7 == 0:
@@ -400,7 +411,8 @@ class Map(object):
                     # 随机上路
                     # for nextroad_ in nextroad_list:
                     # print(nextroad_list)
-                    self.car_run(cross_mapid=cross, nextroad=random.choices(nextroad_list)[0], car=car)
+                    # self.car_run(cross_mapid=cross, nextroad=random.choices(nextroad_list)[0], car=car)
+                    self.car_run(cross_mapid=cross, nextroad=nextroad_, car=car)
 
         self.time = self.time+1
 
