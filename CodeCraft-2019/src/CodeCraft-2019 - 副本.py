@@ -18,10 +18,11 @@ from path import Map
 
 # 判断是否全部车辆都到达的函数
 def isArr(car_list):
+    count=0
     for i in range(len(car_list)):
         if car_list[i].isloc == False:
-            return False
-    return True
+            count = count+1
+    return count
 
 # Dijkstra 创建一个map_path
 def map_Dijkstra(map_value, crosses):
@@ -136,21 +137,74 @@ def main():
         # car.planpath = map_path[car.fr][car.to][:]
 # process
     time = 0  # 计时器
-    mmap = Map(crosses=cross_list, cars=car_list, roads=road_list, time=time, map_path=map_path)  # 创建地图
-    # 当所有的车还未到达终点，一直更新地图
-    while isArr(car_list) == False:
-        mmap.next()
-        # 隔一辆更新一辆车的路线
-        # new_map = initmap(cross_list, road_list)
-        # if time % 3 == 0:
-        #     for i in range(car_list.__len__()):
-        #         if i % 3 == 0:
-        #             car_list[i].map = new_map
-        #             car_list[i].Dijkstra(isInit=False)
-        time = time + 1
-        print(time)
+#     crossindexs = []
+#     for x in range(9):
+#         crossindexs.append([])
+#     for crossindex in range(cross_list.__len__()):
+#         x = crossindex % 9
+#         crossindexs[x].append(crossindex)
+#
+#     for crossindex_list in crossindexs:
+#         print("____________________________________________________")
+#         car_lll = [car for car in car_list if car.fr in crossindex_list]
+#         mmap = Map(crosses=cross_list, cars=car_lll, roads=road_list, time=time, map_path=map_path)  # 创建地图
+#         # 当所有的车还未到达终点，一直更新地图
+#         car_num = isArr(car_lll)
+#         # queue = [i for i in range(50)]
+#         while car_num > 0:
+#             # queue.append(car_num)
+#             # if not queue[0] == queue[49]:
+#             mmap.next()
+#             time = time+1
+#             print(time)
+#             car_num = isArr(car_lll)
+
+
+
+
+    mmap = Map(crosses=cross_list, cars=car_list, roads=road_list, time=time, map_path=map_path)
+    count=0
+    queue = [i for i in range(50)]
+    car_num = isArr(car_list)
+    while car_num >0:
+        queue.append(car_num)
+        del(queue[0])
+        if not queue[0] == queue[49]:
+            mmap.next()
+            time = time+1
+            print(time)
+        else:
+            print("******************************")
+            for car in car_list:
+                if car.isloc==False:
+                    car.plt =time + 1
+                    car.realroad=[]
+            for road in mmap.roads:
+                for i in range(road.chlnum):
+                    for j in range(road.lth):
+                        road.channel[i][j] = 0
+            for crossindex in range(cross_list.__len__()):
+                if crossindex % 10 == 0:
+                    crossindex = crossindex+count
+
+                    # car_lll = [car for car in car_list if car.fr == crossindex and car.isloc==False]
+                    # while isArr(car_list)>0:
+                    #     mmap_ = Map(crosses=cross_list, cars=car_lll, roads=road_list, time=time, map_path=map_path)
+                    #     mmap_.next()
+                    #     time = time+1
+                    #     print(time)
+                    for car in car_list:
+                        if car.fr ==crossindex:
+                            car.realpath = map_path[car.fr][car.to]
+                            car.plt=time+(7-car.spd)
+                            car.isloc=True
+                    time = time + 25
+            count = count + 1
+
+        car_num=isArr(car_list)
 
 # to write output file
+
     mmap.cross_road()
     result = ''
     for car in car_list:
